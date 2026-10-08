@@ -6,13 +6,14 @@ python-dotenv==1.0.1
 pydantic==2.10.4
 
 # --- TTS / voice cloning stack ---
-# OpenVoice V2 (MIT License) - install from GitHub, not PyPI, so you get
-# the current source (see README "Model setup").
-git+https://github.com/myshell-ai/OpenVoice.git@main
-git+https://github.com/myshell-ai/MeloTTS.git
+# OpenVoice V2 & MeloTTS (already installed in .venv).
+# Note: OpenVoice's upstream setup.py pins numpy==1.22.0 which fails on Python 3.12+.
+# For fresh installs, use: pip install --no-deps git+https://github.com/myshell-ai/OpenVoice.git@main git+https://github.com/myshell-ai/MeloTTS.git
+# git+https://github.com/myshell-ai/OpenVoice.git@main
+# git+https://github.com/myshell-ai/MeloTTS.git
 torch==2.5.1
 torchaudio==2.5.1
-librosa==0.10.2.post1
+librosa>=0.9.1  # no strict pin — lets pip pick Python-3.12-compatible binary wheel
 soundfile==0.12.1
 wavmark==0.0.3
 unidic-lite==1.0.8
