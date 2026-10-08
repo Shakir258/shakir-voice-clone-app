@@ -1,0 +1,22 @@
+# --- Web framework ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+python-dotenv==1.0.1
+pydantic==2.10.4
+
+# --- TTS / voice cloning stack ---
+# OpenVoice V2 (MIT License) - install from GitHub, not PyPI, so you get
+# the current source (see README "Model setup").
+git+https://github.com/myshell-ai/OpenVoice.git@main
+git+https://github.com/myshell-ai/MeloTTS.git
+torch==2.5.1
+torchaudio==2.5.1
+librosa==0.10.2.post1
+soundfile==0.12.1
+wavmark==0.0.3
+unidic-lite==1.0.8
+
+# --- Testing ---
+pytest==8.3.4
+httpx==0.28.1
