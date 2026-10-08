@@ -76,6 +76,24 @@ def _synthesize_edge_tts(voice: str, text: str, speed: float, pitch_offset: floa
         tmp_mp3.unlink(missing_ok=True)
 
 
+def _synthesize_fish_tts(text: str, out_wav_path: Path) -> float:
+    """Call Fish Audio API and convert the returned audio to WAV.
+    Returns duration in seconds.
+    """
+    from app.services import fish_tts as _fish_tts
+
+    temp_dir = settings.TEMP_DIR
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    tmp_mp3 = temp_dir / f"fish_{out_wav_path.stem}.mp3"
+
+    try:
+        mp3_bytes = asyncio.run(_fish_tts.generate_speech(text))
+        tmp_mp3.write_bytes(mp3_bytes)
+        duration = convert_audio_file(tmp_mp3, out_wav_path)
+        return duration
+    finally:
+        tmp_mp3.unlink(missing_ok=True)
+
 def generate_speech(
     voice_id: str,
     text: str,
@@ -120,7 +138,16 @@ def generate_speech(
     preset = get_preset_voice(voice_id)
     if preset:
         # Calculate combined speed and pitch from preset definition and user overrides
-        preset_rate = float(preset.get("rate", 1.0))
+        # Rate can be float (1.05) or string ("+0%") — parse safely
+        _raw_rate = preset.get("rate", 1.0)
+        try:
+            _rate_str = str(_raw_rate).strip()
+            if "%" in _rate_str:
+                preset_rate = 1.0  # percentage strings are not supported as rate multipliers
+            else:
+                preset_rate = float(_rate_str)
+        except (ValueError, TypeError):
+            preset_rate = 1.0
         effective_speed = speed * preset_rate
 
         # Parse preset pitch offset if defined (e.g. "+3%", "-5%")
@@ -134,6 +161,7 @@ def generate_speech(
 
         effective_pitch = pitch + preset_pitch_offset
         base_voice = preset.get("base_speaker") or preset.get("voice", "hi-IN-MadhurNeural")
+        preset_engine = preset.get("engine", "edge")
 
         chunks = split_hindi_text(text, settings.MAX_CHARS_PER_CHUNK)
         temp_dir = settings.TEMP_DIR
@@ -144,7 +172,10 @@ def generate_speech(
         try:
             for i, chunk in enumerate(chunks):
                 chunk_file = temp_dir / f"chunk_{req_id}_{i}.wav"
-                _synthesize_edge_tts(base_voice, chunk, effective_speed, effective_pitch, chunk_file)
+                if preset_engine == "fish":
+                    _synthesize_fish_tts(chunk, chunk_file)
+                else:
+                    _synthesize_edge_tts(base_voice, chunk, effective_speed, effective_pitch, chunk_file)
                 chunk_paths.append(chunk_file)
 
             if len(chunk_paths) == 1:

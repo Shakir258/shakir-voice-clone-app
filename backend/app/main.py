@@ -4,7 +4,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api import routes_generations, routes_health, routes_voices
+from app.api import routes_generations, routes_health, routes_tts, routes_voices
 from app.config import settings
 from app.services.model_service import model_service
 from app.utils.files import UnsafeIdentifierError
@@ -43,3 +43,4 @@ async def unsafe_id_handler(request: Request, exc: UnsafeIdentifierError):
 app.include_router(routes_health.router)
 app.include_router(routes_voices.router)
 app.include_router(routes_generations.router)
+app.include_router(routes_tts.router)

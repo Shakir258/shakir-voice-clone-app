@@ -58,6 +58,14 @@ class Settings:
     MAX_CHARS_PER_CHUNK: int = int(os.getenv("MAX_CHARS_PER_CHUNK", "350"))
     MAX_TOTAL_CHARS: int = int(os.getenv("MAX_TOTAL_CHARS", "5000"))
 
+    # Maximum characters accepted by the Fish Audio TTS endpoint.
+    FISH_TTS_MAX_CHARS: int = int(os.getenv("FISH_TTS_MAX_CHARS", "1000"))
+
+    # --- Fish Audio ---
+    FISH_API_KEY: str = os.getenv("FISH_API_KEY", "")
+    FISH_VOICE_ID: str = os.getenv("FISH_VOICE_ID", "")
+    FISH_TTS_MODEL: str = os.getenv("FISH_TTS_MODEL", "s2.1-pro-free")
+
     # --- Uploads ---
     MAX_UPLOAD_MB: int = int(os.getenv("MAX_UPLOAD_MB", "25"))
     MIN_REFERENCE_SECONDS: float = float(os.getenv("MIN_REFERENCE_SECONDS", "3"))

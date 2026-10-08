@@ -201,6 +201,29 @@ for _hv in HINDI_VOICES:
         "voice": _hv["base_speaker"],
     }
 
+# Dynamically inject Fish Audio preset if credentials are configured in .env
+if settings.FISH_API_KEY and settings.FISH_VOICE_ID:
+    ALL_PRESET_VOICES["preset_fish_clone"] = {
+        "id": "preset_fish_clone",
+        "name": "🎙️ Shakir (Fish Audio Clone)",
+        "created_at": "2026-01-01T00:00:00Z",
+        "ready": True,
+        "duration_seconds": None,
+        "is_preset": True,
+        "gender": "male",
+        "category": "Voice Clone",
+        "style": "Natural & Expressive",
+        "description": f"Fish Audio cloned voice — Model: {settings.FISH_TTS_MODEL}",
+        "engine": "fish",
+        "base_speaker": settings.FISH_VOICE_ID,
+        "voice": settings.FISH_VOICE_ID,
+        "preview_text": "नमस्ते! यह मेरी असली आवाज़ का एक नमूना है।",
+        "tags": ["fish-audio", "clone", "custom"],
+        "prompt": None,
+        "pitch": 0,
+        "rate": "+0%",
+    }
+
 
 def is_preset_voice(voice_id: str) -> bool:
     return voice_id in ALL_PRESET_VOICES
