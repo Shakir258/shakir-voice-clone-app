@@ -76,7 +76,7 @@ def _synthesize_edge_tts(voice: str, text: str, speed: float, pitch_offset: floa
         tmp_mp3.unlink(missing_ok=True)
 
 
-def _synthesize_fish_tts(text: str, out_wav_path: Path) -> float:
+def _synthesize_fish_tts(text: str, out_wav_path: Path, voice_id: str | None = None) -> float:
     """Call Fish Audio API and convert the returned audio to WAV.
     Returns duration in seconds.
     """
@@ -87,7 +87,7 @@ def _synthesize_fish_tts(text: str, out_wav_path: Path) -> float:
     tmp_mp3 = temp_dir / f"fish_{out_wav_path.stem}.mp3"
 
     try:
-        mp3_bytes = asyncio.run(_fish_tts.generate_speech(text))
+        mp3_bytes = asyncio.run(_fish_tts.generate_speech(text, voice_key=voice_id))
         tmp_mp3.write_bytes(mp3_bytes)
         duration = convert_audio_file(tmp_mp3, out_wav_path)
         return duration
@@ -138,7 +138,7 @@ def generate_speech(
     preset = get_preset_voice(voice_id)
     if preset:
         # Calculate combined speed and pitch from preset definition and user overrides
-        # Rate can be float (1.05) or string ("+0%") — parse safely
+        # Rate can be float (1.05) or string ("+0%") â€” parse safely
         _raw_rate = preset.get("rate", 1.0)
         try:
             _rate_str = str(_raw_rate).strip()
@@ -173,7 +173,7 @@ def generate_speech(
             for i, chunk in enumerate(chunks):
                 chunk_file = temp_dir / f"chunk_{req_id}_{i}.wav"
                 if preset_engine == "fish":
-                    _synthesize_fish_tts(chunk, chunk_file)
+                    _synthesize_fish_tts(chunk, chunk_file, voice_id=base_voice)
                 else:
                     _synthesize_edge_tts(base_voice, chunk, effective_speed, effective_pitch, chunk_file)
                 chunk_paths.append(chunk_file)

@@ -58,13 +58,26 @@ class Settings:
     MAX_CHARS_PER_CHUNK: int = int(os.getenv("MAX_CHARS_PER_CHUNK", "350"))
     MAX_TOTAL_CHARS: int = int(os.getenv("MAX_TOTAL_CHARS", "5000"))
 
-    # Maximum characters accepted by the Fish Audio TTS endpoint.
-    FISH_TTS_MAX_CHARS: int = int(os.getenv("FISH_TTS_MAX_CHARS", "1000"))
+    # --- Fish Audio TTS ---
+    TTS_VOICE_KEYS: tuple[str, ...] = (
+        "motivation",
+        "news",
+        "hindi_yuva",
+        "hindi_energetic",
+        "adrian",
+    )
+    TTS_DEFAULT_VOICE_KEY: str = "motivation"
+    TTS_MAX_TEXT_LENGTH: int = 1000
+    FISH_TTS_MAX_CHARS: int = int(os.getenv("FISH_TTS_MAX_CHARS", str(TTS_MAX_TEXT_LENGTH)))
 
-    # --- Fish Audio ---
     FISH_API_KEY: str = os.getenv("FISH_API_KEY", "")
     FISH_VOICE_ID: str = os.getenv("FISH_VOICE_ID", "")
     FISH_TTS_MODEL: str = os.getenv("FISH_TTS_MODEL", "s2.1-pro-free")
+    FISH_VOICE_MOTIVATION: str = os.getenv("FISH_VOICE_MOTIVATION", "")
+    FISH_VOICE_NEWS: str = os.getenv("FISH_VOICE_NEWS", "")
+    FISH_VOICE_HINDI_YUVA: str = os.getenv("FISH_VOICE_HINDI_YUVA", "d4d1b40efad24801a84d1e78517866f8")
+    FISH_VOICE_HINDI_ENERGETIC: str = os.getenv("FISH_VOICE_HINDI_ENERGETIC", "e68315c9dd2f498aab485b813e3fda6d")
+    FISH_VOICE_ADRIAN: str = os.getenv("FISH_VOICE_ADRIAN", "bf322df2096a46f18c579d0baa36f41d")
 
     # --- Uploads ---
     MAX_UPLOAD_MB: int = int(os.getenv("MAX_UPLOAD_MB", "25"))

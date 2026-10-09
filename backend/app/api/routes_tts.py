@@ -16,6 +16,7 @@ from pydantic import BaseModel, Field
 
 from app.config import settings
 from app.messages import (
+    FISH_TTS_INVALID_VOICE_KEY,
     FISH_TTS_TEXT_EMPTY,
     FISH_TTS_TEXT_TOO_LONG,
     FISH_TTS_TIMEOUT,
@@ -29,6 +30,7 @@ router = APIRouter(tags=["tts"])
 
 class TTSRequest(BaseModel):
     text: str = Field(min_length=1)
+    voice: str | None = None
 
 
 @router.post("/api/tts")
@@ -38,13 +40,19 @@ async def tts(body: TTSRequest) -> Response:
     if not text:
         raise HTTPException(400, FISH_TTS_TEXT_EMPTY)
 
-    if len(text) > settings.FISH_TTS_MAX_CHARS:
+    if len(text) > settings.TTS_MAX_TEXT_LENGTH:
         raise HTTPException(400, FISH_TTS_TEXT_TOO_LONG)
 
+    if body.voice is not None and body.voice not in settings.TTS_VOICE_KEYS:
+        raise HTTPException(
+            400,
+            FISH_TTS_INVALID_VOICE_KEY.format(valid_keys=", ".join(settings.TTS_VOICE_KEYS)),
+        )
+
     try:
-        audio_bytes = await generate_speech(text)
+        audio_bytes = await generate_speech(text, body.voice)
     except EnvironmentError as exc:
-        # Misconfigured server — log full message, return generic error.
+        # Misconfigured server or voice — log full message, return generic error without leaking secrets.
         logger.error("Fish TTS env misconfigured: %s", exc)
         raise HTTPException(500, str(exc)) from exc
     except FishTTSTimeoutError:

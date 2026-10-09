@@ -201,28 +201,95 @@ for _hv in HINDI_VOICES:
         "voice": _hv["base_speaker"],
     }
 
-# Dynamically inject Fish Audio preset if credentials are configured in .env
-if settings.FISH_API_KEY and settings.FISH_VOICE_ID:
-    ALL_PRESET_VOICES["preset_fish_clone"] = {
-        "id": "preset_fish_clone",
-        "name": "🎙️ Shakir (Fish Audio Clone)",
+# Dynamically inject Fish Audio presets if credentials are configured in .env
+if settings.FISH_API_KEY:
+    # 1. Hindi Yuva (d4d1b40efad24801a84d1e78517866f8)
+    ALL_PRESET_VOICES["preset_fish_hindi_yuva"] = {
+        "id": "preset_fish_hindi_yuva",
+        "name": "🇮🇳 युवा हिंदी आवाज़ (Fish Audio - Storyteller)",
         "created_at": "2026-01-01T00:00:00Z",
         "ready": True,
         "duration_seconds": None,
         "is_preset": True,
         "gender": "male",
-        "category": "Voice Clone",
-        "style": "Natural & Expressive",
-        "description": f"Fish Audio cloned voice — Model: {settings.FISH_TTS_MODEL}",
+        "category": "Storytelling & Narration",
+        "style": "Spasht & Calm",
+        "description": "युवा, स्पष्ट हिंदी पुरुष आवाज़ जो कहानी कहने और वर्णन के लिए आदर्श है। (Fish Audio)",
         "engine": "fish",
-        "base_speaker": settings.FISH_VOICE_ID,
-        "voice": settings.FISH_VOICE_ID,
-        "preview_text": "नमस्ते! यह मेरी असली आवाज़ का एक नमूना है।",
-        "tags": ["fish-audio", "clone", "custom"],
+        "base_speaker": settings.FISH_VOICE_HINDI_YUVA,
+        "voice": settings.FISH_VOICE_HINDI_YUVA,
+        "preview_text": "यह एक युवा, स्पष्ट हिंदी पुरुष आवाज़ है जो कहानी कहने और वर्णन के लिए बिल्कुल सही है।",
+        "tags": ["fish-audio", "hindi", "narration", "storytelling", "bharat"],
         "prompt": None,
         "pitch": 0,
         "rate": "+0%",
     }
+
+    # 2. Hindi Energetic (e68315c9dd2f498aab485b813e3fda6d)
+    ALL_PRESET_VOICES["preset_fish_hindi_energetic"] = {
+        "id": "preset_fish_hindi_energetic",
+        "name": "⚡ ऊर्जावान हिंदी कथावाचक (Fish Audio - Energetic)",
+        "created_at": "2026-01-01T00:00:00Z",
+        "ready": True,
+        "duration_seconds": None,
+        "is_preset": True,
+        "gender": "male",
+        "category": "Social Media & Reels",
+        "style": "Energetic & Dynamic",
+        "description": "युवा पुरुष की ऊर्जावान और स्पष्ट हिंदी आवाज़, जो कहानियों, चर्चाओं और रील्स के लिए उपयुक्त है। (Fish Audio)",
+        "engine": "fish",
+        "base_speaker": settings.FISH_VOICE_HINDI_ENERGETIC,
+        "voice": settings.FISH_VOICE_HINDI_ENERGETIC,
+        "preview_text": "नमस्कार दोस्तों! यह एक ऊर्जावान और स्पष्ट हिंदी आवाज़ है, जो कहानियों और चर्चाओं के लिए एकदम उपयुक्त है।",
+        "tags": ["fish-audio", "hindi", "energetic", "reels", "dynamic", "bharat"],
+        "prompt": None,
+        "pitch": 0,
+        "rate": "+0%",
+    }
+
+    # 3. Adrian (bf322df2096a46f18c579d0baa36f41d)
+    ALL_PRESET_VOICES["preset_fish_adrian"] = {
+        "id": "preset_fish_adrian",
+        "name": "🎙️ Adrian (Fish Audio - English Narrator)",
+        "created_at": "2026-01-01T00:00:00Z",
+        "ready": True,
+        "duration_seconds": None,
+        "is_preset": True,
+        "gender": "male",
+        "category": "Audiobook & Narration",
+        "style": "Deep & Steady",
+        "description": "A steady and reliable narrator with a deep, measured delivery. (Fish Audio)",
+        "engine": "fish",
+        "base_speaker": settings.FISH_VOICE_ADRIAN,
+        "voice": settings.FISH_VOICE_ADRIAN,
+        "preview_text": "Welcome. This is Adrian, a steady and reliable narrator for your audio stories.",
+        "tags": ["fish-audio", "english", "narration", "steady", "deep"],
+        "prompt": None,
+        "pitch": 0,
+        "rate": "+0%",
+    }
+
+    if settings.FISH_VOICE_ID:
+        ALL_PRESET_VOICES["preset_fish_clone"] = {
+            "id": "preset_fish_clone",
+            "name": "🎙️ Shakir (Fish Audio Clone)",
+            "created_at": "2026-01-01T00:00:00Z",
+            "ready": True,
+            "duration_seconds": None,
+            "is_preset": True,
+            "gender": "male",
+            "category": "Voice Clone",
+            "style": "Natural & Expressive",
+            "description": f"Fish Audio cloned voice — Model: {settings.FISH_TTS_MODEL}",
+            "engine": "fish",
+            "base_speaker": settings.FISH_VOICE_ID,
+            "voice": settings.FISH_VOICE_ID,
+            "preview_text": "नमस्ते! यह मेरी असली आवाज़ का एक नमूना है।",
+            "tags": ["fish-audio", "clone", "custom"],
+            "prompt": None,
+            "pitch": 0,
+            "rate": "+0%",
+        }
 
 
 def is_preset_voice(voice_id: str) -> bool:
