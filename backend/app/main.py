@@ -44,3 +44,9 @@ app.include_router(routes_health.router)
 app.include_router(routes_voices.router)
 app.include_router(routes_generations.router)
 app.include_router(routes_tts.router)
+
+
+@app.get("/")
+@app.head("/")
+def root():
+    return {"status": "ok", "service": "Voice Studio Backend"}
