@@ -269,6 +269,28 @@ if settings.FISH_API_KEY:
         "rate": "+0%",
     }
 
+    # 4. Ethan (536d3a5e000945adb7038665781a4aca)
+    ALL_PRESET_VOICES["preset_fish_ethan"] = {
+        "id": "preset_fish_ethan",
+        "name": "🎙️ Ethan (Fish Audio - Documentary Explainer)",
+        "created_at": "2026-01-01T00:00:00Z",
+        "ready": True,
+        "duration_seconds": None,
+        "is_preset": True,
+        "gender": "male",
+        "category": "Educational & Documentary",
+        "style": "Curious & Authoritative",
+        "description": "A curious, calm, and articulate explainer voice for documentaries and educational videos. (Fish Audio)",
+        "engine": "fish",
+        "base_speaker": settings.FISH_VOICE_ETHAN,
+        "voice": settings.FISH_VOICE_ETHAN,
+        "preview_text": "Welcome. Today, we're exploring how curiosity shapes our understanding of the world around us.",
+        "tags": ["fish-audio", "english", "documentary", "educational", "explainer"],
+        "prompt": None,
+        "pitch": 0,
+        "rate": "+0%",
+    }
+
     if settings.FISH_VOICE_ID:
         ALL_PRESET_VOICES["preset_fish_clone"] = {
             "id": "preset_fish_clone",

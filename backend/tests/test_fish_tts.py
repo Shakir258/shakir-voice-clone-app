@@ -29,14 +29,17 @@ def test_resolve_voice_id_known_keys(monkeypatch):
     monkeypatch.setenv("FISH_VOICE_HINDI_YUVA", "d4d1b40efad24801a84d1e78517866f8")
     monkeypatch.setenv("FISH_VOICE_HINDI_ENERGETIC", "e68315c9dd2f498aab485b813e3fda6d")
     monkeypatch.setenv("FISH_VOICE_ADRIAN", "bf322df2096a46f18c579d0baa36f41d")
+    monkeypatch.setenv("FISH_VOICE_ETHAN", "536d3a5e000945adb7038665781a4aca")
 
     assert resolve_voice_id("motivation") == "ref_motivation_123"
     assert resolve_voice_id("news") == "ref_news_456"
     assert resolve_voice_id("hindi_yuva") == "d4d1b40efad24801a84d1e78517866f8"
     assert resolve_voice_id("hindi_energetic") == "e68315c9dd2f498aab485b813e3fda6d"
     assert resolve_voice_id("adrian") == "bf322df2096a46f18c579d0baa36f41d"
-    # Direct 32-character hex ID
+    assert resolve_voice_id("ethan") == "536d3a5e000945adb7038665781a4aca"
+    # Direct 32-character hex IDs
     assert resolve_voice_id("d4d1b40efad24801a84d1e78517866f8") == "d4d1b40efad24801a84d1e78517866f8"
+    assert resolve_voice_id("536d3a5e000945adb7038665781a4aca") == "536d3a5e000945adb7038665781a4aca"
 
 
 def test_resolve_voice_id_default_fallback(monkeypatch):

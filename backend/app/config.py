@@ -65,6 +65,7 @@ class Settings:
         "hindi_yuva",
         "hindi_energetic",
         "adrian",
+        "ethan",
     )
     TTS_DEFAULT_VOICE_KEY: str = "motivation"
     TTS_MAX_TEXT_LENGTH: int = 1000
@@ -78,6 +79,7 @@ class Settings:
     FISH_VOICE_HINDI_YUVA: str = os.getenv("FISH_VOICE_HINDI_YUVA", "d4d1b40efad24801a84d1e78517866f8")
     FISH_VOICE_HINDI_ENERGETIC: str = os.getenv("FISH_VOICE_HINDI_ENERGETIC", "e68315c9dd2f498aab485b813e3fda6d")
     FISH_VOICE_ADRIAN: str = os.getenv("FISH_VOICE_ADRIAN", "bf322df2096a46f18c579d0baa36f41d")
+    FISH_VOICE_ETHAN: str = os.getenv("FISH_VOICE_ETHAN", "536d3a5e000945adb7038665781a4aca")
 
     # --- Uploads ---
     MAX_UPLOAD_MB: int = int(os.getenv("MAX_UPLOAD_MB", "25"))

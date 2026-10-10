@@ -50,6 +50,7 @@ def resolve_voice_id(voice_key: str | None = None) -> str:
         "hindi_yuva": os.getenv("FISH_VOICE_HINDI_YUVA") or settings.FISH_VOICE_HINDI_YUVA,
         "hindi_energetic": os.getenv("FISH_VOICE_HINDI_ENERGETIC") or settings.FISH_VOICE_HINDI_ENERGETIC,
         "adrian": os.getenv("FISH_VOICE_ADRIAN") or settings.FISH_VOICE_ADRIAN,
+        "ethan": os.getenv("FISH_VOICE_ETHAN") or settings.FISH_VOICE_ETHAN,
     }
     voice_id = voice_id_map.get(key)
     if not voice_id:
