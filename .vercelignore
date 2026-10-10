@@ -1,0 +1,4 @@
+# Ignore heavy Python backend and virtual environment when deploying to Vercel
+backend/
+.pytest_cache/
+*.md
