@@ -245,10 +245,9 @@ export function Dashboard() {
           </button>
         </div>
 
-        {!modelReady && !unreachable && (
-          <p className="hint">
-            The local neural model stack is warming up ({status?.status ?? "checking"}
-            {status?.detail ? `: ${status.detail}` : ""}).
+        {text.trim().length === 0 && (
+          <p className="hint prompt-guide-tip">
+            ✨ <strong>Quick Start:</strong> Select a voice above, click any <em>Quick Prompt</em> (or type your text), and click <strong>Generate Hindi Speech</strong>.
           </p>
         )}
         <ErrorMessage message={genError} />

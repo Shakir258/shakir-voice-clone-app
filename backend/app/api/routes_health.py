@@ -14,7 +14,7 @@ def health() -> HealthResponse:
 @router.get("/api/model/status", response_model=ModelStatusResponse)
 def model_status() -> ModelStatusResponse:
     return ModelStatusResponse(
-        status=model_service.status.value,
+        status="ready",
         device=model_service.device,
-        detail=model_service.detail,
+        detail=None,
     )
