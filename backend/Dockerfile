@@ -26,14 +26,12 @@ COPY requirements.txt .
 # Install python dependencies
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir --no-deps git+https://github.com/myshell-ai/OpenVoice.git@main git+https://github.com/myshell-ai/MeloTTS.git && \
+    pip install --no-cache-dir git+https://github.com/myshell-ai/MeloTTS.git && \
+    pip install --no-cache-dir --no-deps git+https://github.com/myshell-ai/OpenVoice.git@main && \
     (python -m melo.download_utils || true)
 
-# Download and setup OpenVoice V2 model checkpoints automatically
-RUN mkdir -p models && \
-    wget -q https://myshell-public-repo-host.s3.amazonaws.com/openvoice/checkpoints_v2_0417.zip -O /tmp/checkpoints.zip && \
-    unzip -q /tmp/checkpoints.zip -d models/ && \
-    rm /tmp/checkpoints.zip
+# Download OpenVoice V2 model checkpoints reliably from official Hugging Face repository
+RUN python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='myshell-ai/OpenVoiceV2', local_dir='models/checkpoints_v2')"
 
 # Copy backend code
 COPY . .

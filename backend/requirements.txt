@@ -22,3 +22,4 @@ unidic-lite==1.0.8
 pytest==8.3.4
 httpx==0.28.1
 edge-tts>=7.0.0
+huggingface-hub>=0.20.0
