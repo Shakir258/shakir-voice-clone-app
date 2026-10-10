@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { VoiceProfile } from "../types/voice";
 import { HINDI_CATEGORIES, HINDI_VOICES_BY_ID } from "../data/hindiVoices";
 import { VoiceCard } from "./VoiceCard";
@@ -228,7 +229,7 @@ export function VoiceStudioModal({
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="voice-modal-backdrop" onClick={onClose}>
       <div className="voice-modal-container" onClick={(e) => e.stopPropagation()}>
         {/* Modal Header */}
@@ -444,6 +445,7 @@ export function VoiceStudioModal({
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
