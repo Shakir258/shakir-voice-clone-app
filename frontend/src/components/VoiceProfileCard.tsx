@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import type { VoiceProfile } from "../types/voice";
+import { HINDI_VOICES_BY_ID } from "../data/hindiVoices";
+import { apiUrl } from "../services/api";
 
 interface Props {
   voice: VoiceProfile;
@@ -9,9 +12,40 @@ interface Props {
 }
 
 export function VoiceProfileCard({ voice, onRename, onDelete, onRecompute }: Props) {
+  const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(voice.name);
   const [busy, setBusy] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const hindiMeta = HINDI_VOICES_BY_ID.get(voice.id);
+  const displayName = hindiMeta?.name || voice.name;
+  const displayCategory = hindiMeta?.category || (voice.is_preset ? "Studio Voice" : "Custom Cloned");
+  const displayGender = hindiMeta?.gender || voice.gender || (displayName.toLowerCase().includes("female") ? "female" : "male");
+  const displayStyle = hindiMeta?.style || voice.style || "Natural Neural";
+  const displayDesc = hindiMeta?.description || voice.description || (voice.is_preset ? "Studio-grade neural voice with natural Hindi articulation." : "Custom cloned voice from audio sample.");
+
+  const togglePreview = () => {
+    if (isPlaying && audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+      return;
+    }
+
+    const audioUrl = apiUrl(`/api/voices/${voice.id}/preview`);
+    const audio = new Audio(audioUrl);
+    audioRef.current = audio;
+
+    setIsPlaying(true);
+    audio.onended = () => setIsPlaying(false);
+    audio.onerror = () => setIsPlaying(false);
+    audio.play().catch(() => setIsPlaying(false));
+  };
+
+  const handleUseVoice = () => {
+    navigate("/", { state: { voiceId: voice.id } });
+  };
 
   async function save() {
     if (!name.trim()) return;
@@ -22,75 +56,115 @@ export function VoiceProfileCard({ voice, onRename, onDelete, onRecompute }: Pro
   }
 
   return (
-    <div className="voice-profile-card">
-      <div className="voice-profile-card-header">
+    <div className={`voice-profile-card luxury-card ${voice.is_preset ? "preset-card" : "custom-card"}`}>
+      {/* Card Header & Badges */}
+      <div className="voice-card-top">
+        <div className="card-badge-row">
+          <span className={`gender-badge ${displayGender === "female" ? "female" : "male"}`}>
+            {displayGender === "female" ? "👩 Female" : "👨 Male"}
+          </span>
+          <span className="category-pill">{displayCategory}</span>
+          <span className="style-badge">{displayStyle}</span>
+        </div>
+
+        <span className={`ready-badge ${voice.is_preset ? "ready" : voice.ready ? "ready" : "not-ready"}`}>
+          {voice.is_preset ? "🇮🇳 Studio Preset" : voice.ready ? "✓ Cloned" : "Needs recompute"}
+        </span>
+      </div>
+
+      {/* Voice Name & Description */}
+      <div className="voice-card-body">
         {editing ? (
           <input
+            className="rename-input"
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && save()}
             autoFocus
           />
         ) : (
-          <h3>{voice.name}</h3>
+          <h3 className="voice-card-name" title={displayName}>
+            {displayName}
+          </h3>
         )}
-        <span className={`ready-badge ${voice.is_preset ? "ready" : voice.ready ? "ready" : "not-ready"}`}>
-          {voice.is_preset ? "Studio Preset" : voice.ready ? "Ready" : "Needs recompute"}
-        </span>
+
+        <p className="voice-card-desc">{displayDesc}</p>
       </div>
 
-      <p className="voice-profile-meta">
-        {voice.is_preset
-          ? "Pre-installed high quality neural voice"
-          : `Created ${new Date(voice.created_at).toLocaleString()}${
-              voice.duration_seconds != null ? ` · ${voice.duration_seconds.toFixed(1)}s reference` : ""
-            }`}
-      </p>
-
-      {!voice.is_preset && (
-        <div className="voice-profile-actions">
-          {editing ? (
-            <>
-              <button className="btn btn-primary" disabled={busy} onClick={save}>
-                Save
-              </button>
-              <button className="btn btn-secondary" onClick={() => setEditing(false)}>
-                Cancel
-              </button>
-            </>
-          ) : (
-            <>
-              <button className="btn btn-secondary" onClick={() => setEditing(true)}>
-                Rename
-              </button>
-              <button
-                className="btn btn-secondary"
-                disabled={busy}
-                onClick={async () => {
-                  setBusy(true);
-                  await onRecompute(voice.id);
-                  setBusy(false);
-                }}
-                title="Recreate this profile's voice data from its saved reference recording."
-              >
-                Recompute
-              </button>
-              <button
-                className="btn btn-danger"
-                disabled={busy}
-                onClick={async () => {
-                  if (confirm(`Delete voice profile "${voice.name}"? This cannot be undone.`)) {
-                    setBusy(true);
-                    await onDelete(voice.id);
-                  }
-                }}
-              >
-                Delete
-              </button>
-            </>
-          )}
+      {/* Audio Sample Preview Text */}
+      {hindiMeta?.preview_text && (
+        <div className="sample-dialogue-quote">
+          "{hindiMeta.preview_text}"
         </div>
       )}
+
+      {/* Card Actions Footer */}
+      <div className="voice-card-footer">
+        <div className="primary-actions-group">
+          <button
+            type="button"
+            className={`btn-preview-circle ${isPlaying ? "playing" : ""}`}
+            onClick={togglePreview}
+            title={isPlaying ? "Stop Sample" : "Play Voice Sample"}
+          >
+            {isPlaying ? "⏹ Stop" : "▶ Hear Sample"}
+          </button>
+
+          <button
+            type="button"
+            className="btn-use-voice"
+            onClick={handleUseVoice}
+            title="Use this voice to generate speech"
+          >
+            ⚡ Use in Studio
+          </button>
+        </div>
+
+        {!voice.is_preset && (
+          <div className="custom-voice-tools">
+            {editing ? (
+              <>
+                <button className="btn-tool-save" disabled={busy} onClick={save}>
+                  Save
+                </button>
+                <button className="btn-tool-cancel" onClick={() => setEditing(false)}>
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <>
+                <button className="btn-tool" onClick={() => setEditing(true)}>
+                  Rename
+                </button>
+                <button
+                  className="btn-tool"
+                  disabled={busy}
+                  onClick={async () => {
+                    setBusy(true);
+                    await onRecompute(voice.id);
+                    setBusy(false);
+                  }}
+                  title="Recreate profile"
+                >
+                  Recompute
+                </button>
+                <button
+                  className="btn-tool danger"
+                  disabled={busy}
+                  onClick={async () => {
+                    if (confirm(`Delete voice profile "${voice.name}"?`)) {
+                      setBusy(true);
+                      await onDelete(voice.id);
+                    }
+                  }}
+                >
+                  Delete
+                </button>
+              </>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

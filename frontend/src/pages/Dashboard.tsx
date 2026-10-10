@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { StatusIndicator } from "../components/StatusIndicator";
 import { VoiceProfileSelector } from "../components/VoiceProfileSelector";
 import { TextEditor } from "../components/TextEditor";
@@ -69,6 +70,15 @@ export function Dashboard() {
     if (result) refreshHistory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [result]);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const passedVoiceId = (location.state as { voiceId?: string } | null)?.voiceId;
+    if (passedVoiceId) {
+      setVoiceId(passedVoiceId);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (!voiceId && voices.length > 0) {
