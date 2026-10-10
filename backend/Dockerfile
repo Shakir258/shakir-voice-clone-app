@@ -27,8 +27,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir --no-deps git+https://github.com/myshell-ai/OpenVoice.git@main git+https://github.com/myshell-ai/MeloTTS.git && \
-    python -m unidic download && \
-    python -m melo.download_utils
+    (python -m melo.download_utils || true)
 
 # Download and setup OpenVoice V2 model checkpoints automatically
 RUN mkdir -p models && \
