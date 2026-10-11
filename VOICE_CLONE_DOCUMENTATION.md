@@ -956,6 +956,71 @@ Store in SHA-256 cache → Serve via /api/generations/{id}/audio
 
 ---
 
+## 🐟 Fish Audio 35 Curated Voices — Kab Kaunsi Voice Use Karein
+
+> Saari 35 voices `backend/app/fish_voices.py` me configured hain. `.env` me 35 alag keys ki zaroorat nahi hai.
+
+### 1. 👑 Shakir Personal Clones (Personal Brand & YouTube Videos)
+| Voice Name | Reference ID | Style & Tone | Kab Use Karein |
+| :--- | :--- | :--- | :--- |
+| **shakir 1** | `706b83690d4048b6a66f344c113c09cd` | Natural & Expressive | Aapki primary YouTube videos, Hindi commentary, intro/outro ke liye. |
+| **shakir 2** | `7676ea89342c438b9e894c2798292c23` | Warm & Confident | Deep explanations, tutorials, aur serious podcast episodes ke liye. |
+
+### 2. 💰 Finance, Stock Market & Wealth
+| Voice Name | Reference ID | Style & Tone | Kab Use Karein |
+| :--- | :--- | :--- | :--- |
+| **Dynamic Finance Coach** | `ef077e1438254791b72b0376c358841d` | Dynamic & Inspiring | High-energy finance advice, investment mindset reels & shorts. |
+| **Clear Finance Narrator** | `91c7d5383f90498892912ef5d97dc57b` | Clear & Articulate | Long-form market reports, stock analysis, corporate case studies. |
+| **Global Finance Analyst** | `78c242b7c76049528e463673baaec280` | Authoritative | Global economy, central bank policies, crypto macro updates. |
+| **finance** | `ea47f73b0b9c458cb121997ac6e3f619` | Professional | General money management tips, SIP, mutual funds guides. |
+| **F** | `0701d7e835274181a086116f4458e523` | Sharp & Fast | Short finance news alerts, fast bullet-point updates. |
+
+### 3. 🎙️ Hindi Storytelling, Drama & Motivation
+| Voice Name | Reference ID | Style & Tone | Kab Use Karein |
+| :--- | :--- | :--- | :--- |
+| **हिंदी कहानीकार** | `f3c0eb165c354233ba141b2c604d8d72` | Classic Storyteller | Dadi-nani ki kahaniyan, moral stories, emotional long storytelling. |
+| **Hindi Narrative Voice** | `0d8f5d5a6c21417b9141bf66c530357a` | Poetic & Expressive | Hindi audiobooks, biographies, historical narrative videos. |
+| **शांत हिंदी पुरुष आवाज़** | `6a9e3e125639485bbe404363818ef997` | Calm & Peaceful | Meditation, deep sleep stories, mental peace, philosophical talks. |
+| **ऊर्जावान हिंदी कथावाचक** | `e68315c9dd2f498aab485b813e3fda6d` | High Energy Suspense | Viral reels, thrillers, suspense kahaniyan, fast-paced shorts. |
+| **प्रेरक युवा आवाज़** | `2cb54c04d6e94115b28fc2a21f6e7383` | Motivational | Gym motivation, UPSC/exam preparation reels, hustle speeches. |
+| **Papa Explain** | `7db45f836fc541ab8993d0d1b9edea3c` | Warm Explainer | "How it works" videos, kids educational science, friendly mentoring. |
+| **और इसी के साथ तुर्की ड्रामा** | `386c16ec4fa54f75954dc02a1c6be8a6` | Dramatic & Dubbing | Turkish drama recap/summary, serial cliffhanger narration. |
+
+### 4. 🎮 Gaming, Entertainment & Character Voices
+| Voice Name | Reference ID | Style & Tone | Kab Use Karein |
+| :--- | :--- | :--- | :--- |
+| **Markiplier.** | `a2346273eb314b6cb82ba83dbc9d9fee` | Deep & Dramatic | Gaming reaction videos, dramatic horror walkthroughs. |
+| **robux free** | `a2d65ead4c924fb9bdadb45200c456ca` | Youthful Gaming | Roblox, Minecraft, fun playful gaming tutorials. |
+| **Slax** | `c5f56a6cc2ec4fa8920cb4c5889a3fb7` | Edgy & Fast | Esports commentary, fast stream intros. |
+| **Slax2** | `3c7d9b34f57541838e79b59f368ce826` | Confident Punch | Intense gaming moments, speedruns, punchy clips. |
+| **Sally face** | `bd1c0dfad5ae42b4891c16f8a8588ade` | Mysterious | Dark mystery games, spooky lore, atmospheric voiceover. |
+
+### 5. 📚 English Documentary, Commercial & Voiceover
+| Voice Name | Reference ID | Style & Tone | Kab Use Karein |
+| :--- | :--- | :--- | :--- |
+| **Ethan** | `536d3a5e000945adb7038665781a4aca` | Articulate Explainer | Science, space, nature documentaries & curiosity explainers. |
+| **facty! fact attack adventures** | `f8fb3d11726f44849b9ebc07f499abe6` | Enthusiastic Facts | "Did you know?" trivia, mind-blowing facts, top 10 listicles. |
+| **ELITE** | `d8a1340984ee4b63ad1ffae27a6a4339` | Luxury Brand Voice | High-end product promos, car commercials, luxury branding. |
+| **WNBA VOICEOVER** | `fb7ec16ca51a45a5a4db881244d7990a` | Energetic Hype | Sports promos, fitness trailers, hype reels. |
+| **Yelling water mark** | `eb28ab7403774426b8f3754068ae0813` | Punchy & Bold | Audio branding, stingers, high-impact beat drops. |
+| **Alex** | `c0a3e248700c445b9961b6d8c5a24bee` | Conversational | Modern tech walkthroughs, SaaS demos, friendly guide. |
+| **Nj voice** | `b25e81c8e661461da5eac1733bba149d` | Casual & Warm | Friendly vlogs, casual podcasts, daily stories. |
+
+### 6. 🇪🇸 Spanish Voices (Spanish Content & Dubbing)
+| Voice Name | Reference ID | Style & Tone | Kab Use Karein |
+| :--- | :--- | :--- | :--- |
+| **datos jhoel** | `4271f74fcaad4970b0148b76df58237b` | Curious Spanish | Spanish educational and curious facts shorts. |
+| **finance spanice lag** | `03261b66f8194d599eef7314dfa4111f` | Analytical Spanish | Spanish financial market updates. |
+| **finanzas 22 spanice** | `552859222bd543559870abf8ee929e49` | Business Spanish | Investment and wealth strategies in Spanish. |
+| **virity spanice** | `f1caefb2f06841deb1f2f7924fca838e` | Warm Spanish Female | Lifestyle vlogs and storytelling en español. |
+| **homosapiens spanice** | `aad8750e819d49ed957ea1d1706bc04d` | Epic History Spanish | Human evolution and ancient civilization documentaries. |
+| **Esqueleto spanice** | `bdd40ec2edde4942936f9462b650cc32` | Theatrical Character | Theatrical stories and animated character voice. |
+| **Narrador Documental spanice** | `8b7187104e32481bb675f0cca0b0a002` | Wildlife Documentary | Nature & wildlife documentary in Spanish. |
+| **Voz Narrador Documental spanice**| `c87656721dda48a7906f990f036ce76f` | Deep Historical Doc | Ancient history and mystery documentaries. |
+| **narracion terror narrator spanice**| `f4210324af9d4a28a9cfe15f74a9cd84` | Horror Suspense | Creepy pasta, ghost stories, unsolved mysteries in Spanish. |
+
+---
+
 ## Quick Reference Card
 
 ```

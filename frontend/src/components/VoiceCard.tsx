@@ -64,13 +64,23 @@ export function VoiceCard({
 
         <div className="voice-meta-tags">
           {voice.style && <span className="style-badge">{voice.style}</span>}
-          <span className="lang-badge">Hindi</span>
-          {voice.is_preset && <span className="studio-badge">Studio</span>}
+          <span className="lang-badge">
+            {voice.category === "Spanish" || voice.tags?.includes("spanish")
+              ? "Spanish"
+              : voice.tags?.includes("english")
+              ? "English"
+              : "Hindi"}
+          </span>
+          {voice.is_preset && (
+            <span className="studio-badge">
+              {voice.engine === "fish" ? "Fish Audio" : "Studio"}
+            </span>
+          )}
         </div>
 
         <p className="voice-description">
           {voice.description ||
-            "Professional, natural Hindi neural voice for studio productions."}
+            "Professional, natural neural voice for studio productions."}
         </p>
       </div>
 

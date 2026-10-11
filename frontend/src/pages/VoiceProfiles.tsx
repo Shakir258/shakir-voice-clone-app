@@ -26,7 +26,7 @@ export function VoiceProfiles() {
     return voices.filter((v) => {
       const meta = HINDI_VOICES_BY_ID.get(v.id);
       const voiceName = meta?.name || v.name;
-      const category = meta?.category || (v.is_preset ? "Studio" : "Custom Cloned");
+      const category = meta?.category || v.category || (v.is_preset ? (v.engine === "fish" ? "Fish Audio" : "Studio") : "Custom Cloned");
       const gender = meta?.gender || v.gender || (voiceName.toLowerCase().includes("female") ? "female" : "male");
       const style = meta?.style || "";
       const desc = meta?.description || "";
@@ -45,8 +45,41 @@ export function VoiceProfiles() {
 
       // 2. Category Filter
       if (selectedCategory !== "All") {
-        if (selectedCategory === "Custom Cloned") {
+        if (selectedCategory === "🐟 Fish Audio" || selectedCategory === "Fish Audio") {
+          if (v.engine !== "fish" && !v.tags?.includes("fish-audio")) return false;
+        } else if (selectedCategory === "Custom Cloned") {
           if (v.is_preset) return false;
+        } else if (selectedCategory === "Finance & Business") {
+          const cat = category.toLowerCase();
+          if (!cat.includes("finance") && !cat.includes("finanz")) return false;
+        } else if (selectedCategory === "Spanish") {
+          const cat = category.toLowerCase();
+          const tags = (v.tags || []).join(" ").toLowerCase();
+          if (!cat.includes("span") && !tags.includes("spanish") && !tags.includes("spanice")) return false;
+        } else if (selectedCategory === "Character & Gaming") {
+          const cat = category.toLowerCase();
+          if (!cat.includes("gaming") && !cat.includes("character")) return false;
+        } else if (selectedCategory === "Social Media & Reels") {
+          const cat = category.toLowerCase();
+          if (!cat.includes("social") && !cat.includes("reel") && !cat.includes("youtube")) return false;
+        } else if (selectedCategory === "Commercial & Voiceover") {
+          const cat = category.toLowerCase();
+          if (!cat.includes("commercial") && !cat.includes("advertis") && !cat.includes("voiceover")) return false;
+        } else if (selectedCategory === "Storytelling") {
+          const cat = category.toLowerCase();
+          if (!cat.includes("story") && !cat.includes("kahani") && !cat.includes("narration")) return false;
+        } else if (selectedCategory === "Documentary") {
+          const cat = category.toLowerCase();
+          if (!cat.includes("documentary") && !cat.includes("documental")) return false;
+        } else if (selectedCategory === "Educational") {
+          const cat = category.toLowerCase();
+          if (!cat.includes("educat") && !cat.includes("fact")) return false;
+        } else if (selectedCategory === "News & Broadcast") {
+          const cat = category.toLowerCase();
+          if (!cat.includes("news") && !cat.includes("broadcast")) return false;
+        } else if (selectedCategory === "Motivation & Inspiration") {
+          const cat = category.toLowerCase();
+          if (!cat.includes("motivat") && !cat.includes("inspir")) return false;
         } else if (category !== selectedCategory) {
           return false;
         }
@@ -80,6 +113,24 @@ export function VoiceProfiles() {
     }
   }
 
+  const allCategories = useMemo(() => {
+    return [
+      "All",
+      "🐟 Fish Audio",
+      "Custom Cloned",
+      "News & Broadcast",
+      "Storytelling",
+      "Finance & Business",
+      "Social Media & Reels",
+      "Character & Gaming",
+      "Documentary",
+      "Educational",
+      "Spanish",
+      "Commercial & Voiceover",
+      "Motivation & Inspiration",
+    ];
+  }, []);
+
   const presetCount = voices.filter((v) => v.is_preset).length;
   const customCount = voices.filter((v) => !v.is_preset).length;
 
@@ -91,7 +142,7 @@ export function VoiceProfiles() {
           <div className="hero-badge">🎙️ Complete Audio Library</div>
           <h1 className="hero-title">Voice Catalog & Cloner</h1>
           <p className="hero-subtitle">
-            Browse {presetCount || "100+"} broadcast-ready Hindi AI voices across news, fiction, commercials & reels — or clone your own voice instantly.
+            Browse {presetCount || "140+"} broadcast-ready voices across news, fiction, commercials, finance & reels — or clone your own voice instantly.
           </p>
         </div>
 
@@ -195,11 +246,11 @@ export function VoiceProfiles() {
         <div className="catalog-categories-bar">
           <span className="categories-label">Categories:</span>
           <div className="category-chips-list">
-            {HINDI_CATEGORIES.map((cat) => (
+            {allCategories.map((cat) => (
               <button
                 key={cat}
                 type="button"
-                className={`category-chip ${selectedCategory === cat ? "active" : ""}`}
+                className={`category-chip ${cat.includes("Fish") ? "fish-chip" : ""} ${selectedCategory === cat ? "active" : ""}`}
                 onClick={() => setSelectedCategory(cat)}
               >
                 {cat}

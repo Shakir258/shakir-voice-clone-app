@@ -24,38 +24,24 @@ client = TestClient(app)
 
 
 def test_resolve_voice_id_known_keys(monkeypatch):
-    monkeypatch.setenv("FISH_VOICE_MOTIVATION", "ref_motivation_123")
-    monkeypatch.setenv("FISH_VOICE_NEWS", "ref_news_456")
-    monkeypatch.setenv("FISH_VOICE_HINDI_YUVA", "d4d1b40efad24801a84d1e78517866f8")
-    monkeypatch.setenv("FISH_VOICE_HINDI_ENERGETIC", "e68315c9dd2f498aab485b813e3fda6d")
-    monkeypatch.setenv("FISH_VOICE_ADRIAN", "bf322df2096a46f18c579d0baa36f41d")
-    monkeypatch.setenv("FISH_VOICE_ETHAN", "536d3a5e000945adb7038665781a4aca")
-
-    assert resolve_voice_id("motivation") == "ref_motivation_123"
-    assert resolve_voice_id("news") == "ref_news_456"
-    assert resolve_voice_id("hindi_yuva") == "d4d1b40efad24801a84d1e78517866f8"
-    assert resolve_voice_id("hindi_energetic") == "e68315c9dd2f498aab485b813e3fda6d"
-    assert resolve_voice_id("adrian") == "bf322df2096a46f18c579d0baa36f41d"
-    assert resolve_voice_id("ethan") == "536d3a5e000945adb7038665781a4aca"
+    assert resolve_voice_id("shakir_1") == "706b83690d4048b6a66f344c113c09cd"
+    assert resolve_voice_id("shakir_2") == "7676ea89342c438b9e894c2798292c23"
+    assert resolve_voice_id("dynamic_finance_coach") == "ef077e1438254791b72b0376c358841d"
+    assert resolve_voice_id("preset_fish_ef077e1438254791b72b0376c358841d") == "ef077e1438254791b72b0376c358841d"
     # Direct 32-character hex IDs
-    assert resolve_voice_id("d4d1b40efad24801a84d1e78517866f8") == "d4d1b40efad24801a84d1e78517866f8"
+    assert resolve_voice_id("ef077e1438254791b72b0376c358841d") == "ef077e1438254791b72b0376c358841d"
     assert resolve_voice_id("536d3a5e000945adb7038665781a4aca") == "536d3a5e000945adb7038665781a4aca"
 
 
 def test_resolve_voice_id_default_fallback(monkeypatch):
-    monkeypatch.setenv("FISH_VOICE_MOTIVATION", "ref_motivation_123")
-    # None or unknown voice key falls back to default ("motivation")
-    assert resolve_voice_id(None) == "ref_motivation_123"
-    assert resolve_voice_id("unknown_voice") == "ref_motivation_123"
+    # None or unknown voice key falls back to default ("shakir_1")
+    assert resolve_voice_id(None) == "706b83690d4048b6a66f344c113c09cd"
+    assert resolve_voice_id("unknown_voice") == "706b83690d4048b6a66f344c113c09cd"
 
 
-def test_resolve_voice_id_missing_env(monkeypatch):
-    monkeypatch.delenv("FISH_VOICE_MOTIVATION", raising=False)
-    monkeypatch.setattr(settings, "FISH_VOICE_MOTIVATION", "")
-
-    with pytest.raises(EnvironmentError) as exc_info:
-        resolve_voice_id("motivation")
-    assert FISH_TTS_VOICE_NOT_CONFIGURED.format(voice_key="motivation") in str(exc_info.value)
+def test_resolve_voice_id_env_override(monkeypatch):
+    monkeypatch.setenv("FISH_VOICE_SHAKIR_1", "custom_override_123")
+    assert resolve_voice_id("shakir_1") == "custom_override_123"
 
 
 @pytest.mark.anyio
@@ -72,24 +58,22 @@ async def test_generate_speech_missing_api_key(monkeypatch):
 async def test_generate_speech_success(monkeypatch):
     monkeypatch.setenv("FISH_API_KEY", "test_key")
     monkeypatch.setenv("FISH_TTS_MODEL", "s2.1-pro-free")
-    monkeypatch.setenv("FISH_VOICE_NEWS", "ref_news_789")
     monkeypatch.setattr(settings, "FISH_API_KEY", "test_key")
     monkeypatch.setattr(settings, "FISH_TTS_MODEL", "s2.1-pro-free")
-    monkeypatch.setattr(settings, "FISH_VOICE_NEWS", "ref_news_789")
 
     mock_response = AsyncMock()
     mock_response.status_code = 200
     mock_response.content = b"fake-mp3-bytes"
 
     with patch("httpx.AsyncClient.post", return_value=mock_response) as mock_post:
-        result = await generate_speech("Hello world", voice_key="news")
+        result = await generate_speech("Hello world", voice_key="dynamic_finance_coach")
         assert result == b"fake-mp3-bytes"
 
         mock_post.assert_called_once()
         _, kwargs = mock_post.call_args
         assert kwargs["json"] == {
             "text": "Hello world",
-            "reference_id": "ref_news_789",
+            "reference_id": "ef077e1438254791b72b0376c358841d",
             "format": "mp3",
         }
         assert kwargs["headers"]["Authorization"] == "Bearer test_key"
@@ -117,7 +101,7 @@ def test_api_tts_invalid_voice_key():
 
 def test_api_tts_success():
     with patch("app.api.routes_tts.generate_speech", new=AsyncMock(return_value=b"audio-bytes")):
-        response = client.post("/api/tts", json={"text": "Hello, world!", "voice": "news"})
+        response = client.post("/api/tts", json={"text": "Hello, world!", "voice": "dynamic_finance_coach"})
         assert response.status_code == 200
         assert response.headers["content-type"] == "audio/mpeg"
         assert response.content == b"audio-bytes"

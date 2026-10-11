@@ -43,11 +43,16 @@ async def tts(body: TTSRequest) -> Response:
     if len(text) > settings.TTS_MAX_TEXT_LENGTH:
         raise HTTPException(400, FISH_TTS_TEXT_TOO_LONG)
 
-    if body.voice is not None and body.voice not in settings.TTS_VOICE_KEYS:
-        raise HTTPException(
-            400,
-            FISH_TTS_INVALID_VOICE_KEY.format(valid_keys=", ".join(settings.TTS_VOICE_KEYS)),
-        )
+    if body.voice is not None:
+        import re
+        from app.fish_voices import ALL_FISH_VOICE_KEYS
+        cleaned_v = body.voice.strip()
+        is_hex = bool(re.fullmatch(r"[0-9a-fA-F]{32}", cleaned_v))
+        if not (is_hex or cleaned_v in settings.TTS_VOICE_KEYS or cleaned_v in ALL_FISH_VOICE_KEYS):
+            raise HTTPException(
+                400,
+                FISH_TTS_INVALID_VOICE_KEY.format(valid_keys=", ".join(settings.TTS_VOICE_KEYS)),
+            )
 
     try:
         audio_bytes = await generate_speech(text, body.voice)

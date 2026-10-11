@@ -35,9 +35,9 @@ export function VoiceStudioModal({
   const [favorites, setFavorites] = useState<string[]>(() => {
     try {
       const saved = localStorage.getItem(FAVORITES_STORAGE_KEY);
-      return saved ? JSON.parse(saved) : ["hi-male-news-anchor-01", "hi-female-news-anchor-02"];
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return ["hi-male-news-anchor-01", "hi-female-news-anchor-02"];
+      return [];
     }
   });
 
@@ -91,6 +91,15 @@ export function VoiceStudioModal({
       } catch {}
       return next;
     });
+  };
+
+  const resetFavorites = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setFavorites([]);
+    try {
+      localStorage.removeItem(FAVORITES_STORAGE_KEY);
+    } catch {}
+    setOnlyFavorites(false);
   };
 
   const handleTogglePlay = (voiceId: string, e: React.MouseEvent) => {
@@ -160,6 +169,24 @@ export function VoiceStudioModal({
     return Array.from(set).sort();
   }, [enrichedVoices]);
 
+  // Curated, clean category list for top navigation
+  const allCategories = useMemo(() => {
+    return [
+      "All",
+      "🐟 Fish Audio",
+      "News & Broadcast",
+      "Storytelling",
+      "Finance & Business",
+      "Social Media & Reels",
+      "Character & Gaming",
+      "Documentary",
+      "Educational",
+      "Spanish",
+      "Commercial & Voiceover",
+      "Motivation & Inspiration",
+    ];
+  }, []);
+
   // Filter voices
   const filteredVoices = useMemo(() => {
     return enrichedVoices.filter((v) => {
@@ -188,7 +215,42 @@ export function VoiceStudioModal({
 
       // 4. Category
       if (selectedCategory !== "All") {
-        if (v.category !== selectedCategory) return false;
+        if (selectedCategory === "🐟 Fish Audio" || selectedCategory === "Fish Audio") {
+          if (v.engine !== "fish" && !v.tags?.includes("fish-audio")) return false;
+        } else if (selectedCategory === "Finance & Business") {
+          const cat = (v.category || "").toLowerCase();
+          if (!cat.includes("finance") && !cat.includes("finanz")) return false;
+        } else if (selectedCategory === "Spanish") {
+          const cat = (v.category || "").toLowerCase();
+          const tags = (v.tags || []).join(" ").toLowerCase();
+          if (!cat.includes("span") && !tags.includes("spanish") && !tags.includes("spanice")) return false;
+        } else if (selectedCategory === "Character & Gaming") {
+          const cat = (v.category || "").toLowerCase();
+          if (!cat.includes("gaming") && !cat.includes("character")) return false;
+        } else if (selectedCategory === "Social Media & Reels") {
+          const cat = (v.category || "").toLowerCase();
+          if (!cat.includes("social") && !cat.includes("reel") && !cat.includes("youtube")) return false;
+        } else if (selectedCategory === "Commercial & Voiceover") {
+          const cat = (v.category || "").toLowerCase();
+          if (!cat.includes("commercial") && !cat.includes("advertis") && !cat.includes("voiceover")) return false;
+        } else if (selectedCategory === "Storytelling") {
+          const cat = (v.category || "").toLowerCase();
+          if (!cat.includes("story") && !cat.includes("kahani") && !cat.includes("narration")) return false;
+        } else if (selectedCategory === "Documentary") {
+          const cat = (v.category || "").toLowerCase();
+          if (!cat.includes("documentary") && !cat.includes("documental")) return false;
+        } else if (selectedCategory === "Educational") {
+          const cat = (v.category || "").toLowerCase();
+          if (!cat.includes("educat") && !cat.includes("fact")) return false;
+        } else if (selectedCategory === "News & Broadcast") {
+          const cat = (v.category || "").toLowerCase();
+          if (!cat.includes("news") && !cat.includes("broadcast")) return false;
+        } else if (selectedCategory === "Motivation & Inspiration") {
+          const cat = (v.category || "").toLowerCase();
+          if (!cat.includes("motivat") && !cat.includes("inspir")) return false;
+        } else if (v.category !== selectedCategory) {
+          return false;
+        }
       }
 
       // 5. Style
@@ -315,14 +377,26 @@ export function VoiceStudioModal({
               </button>
             </div>
 
-            {/* Favorites Toggle */}
-            <button
-              type="button"
-              className={`filter-pill fav-pill ${onlyFavorites ? "active" : ""}`}
-              onClick={() => setOnlyFavorites(!onlyFavorites)}
-            >
-              ❤️ Favorites ({favorites.length})
-            </button>
+            {/* Favorites Toggle & Reset */}
+            <div className="favorites-pill-group">
+              <button
+                type="button"
+                className={`filter-pill fav-pill ${onlyFavorites ? "active" : ""}`}
+                onClick={() => setOnlyFavorites(!onlyFavorites)}
+              >
+                ❤️ Favorites ({favorites.length})
+              </button>
+              {favorites.length > 0 && (
+                <button
+                  type="button"
+                  className="reset-fav-btn"
+                  onClick={resetFavorites}
+                  title="Reset / Clear all favorites"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
 
             {/* Style Dropdown */}
             <div className="style-select-wrapper">
@@ -343,11 +417,11 @@ export function VoiceStudioModal({
 
           {/* Category Tabs Scroll */}
           <div className="category-tabs-scroll">
-            {HINDI_CATEGORIES.map((cat) => (
+            {allCategories.map((cat) => (
               <button
                 key={cat}
                 type="button"
-                className={`category-tab ${selectedCategory === cat ? "active" : ""}`}
+                className={`category-tab ${cat.includes("Fish") ? "fish-tab" : ""} ${selectedCategory === cat ? "active" : ""}`}
                 onClick={() => setSelectedCategory(cat)}
               >
                 {cat}
@@ -359,7 +433,7 @@ export function VoiceStudioModal({
         {/* Results Counter */}
         <div className="voice-results-bar">
           <span className="results-count">
-            Showing <strong>{filteredVoices.length}</strong> Hindi voices
+            Showing <strong>{filteredVoices.length}</strong> studio voices
             {selectedCategory !== "All" ? ` in ${selectedCategory}` : ""}
             {selectedGender !== "all" ? ` (${selectedGender})` : ""}
           </span>
@@ -384,8 +458,8 @@ export function VoiceStudioModal({
                   setSearchTerm("");
                   setSelectedCategory("All");
                   setSelectedGender("all");
-                  setOnlyFavorites(false);
                   setSelectedStyleFilter("all");
+                  resetFavorites();
                 }}
               >
                 Reset All Filters

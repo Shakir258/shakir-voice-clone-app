@@ -35,27 +35,50 @@ class FishTTSTimeoutError(FishTTSError):
 
 
 def resolve_voice_id(voice_key: str | None = None) -> str:
-    """Map a voice key to the Fish reference_id from environment.
+    """Map a voice key to the Fish reference_id.
 
     Defaults to settings.TTS_DEFAULT_VOICE_KEY if voice_key is missing or unknown.
     """
+    from app.fish_voices import (
+        DEFAULT_FISH_VOICE_ID,
+        FISH_VOICES_BY_ID,
+        resolve_fish_reference_id,
+    )
+
     if voice_key and re.fullmatch(r"[0-9a-fA-F]{32}", voice_key.strip()):
         return voice_key.strip()
 
-    key = voice_key if (voice_key and voice_key in settings.TTS_VOICE_KEYS) else settings.TTS_DEFAULT_VOICE_KEY
+    cleaned = voice_key.strip() if voice_key else None
 
-    voice_id_map: dict[str, str] = {
-        "motivation": os.getenv("FISH_VOICE_MOTIVATION") or settings.FISH_VOICE_MOTIVATION,
-        "news": os.getenv("FISH_VOICE_NEWS") or settings.FISH_VOICE_NEWS,
-        "hindi_yuva": os.getenv("FISH_VOICE_HINDI_YUVA") or settings.FISH_VOICE_HINDI_YUVA,
-        "hindi_energetic": os.getenv("FISH_VOICE_HINDI_ENERGETIC") or settings.FISH_VOICE_HINDI_ENERGETIC,
-        "adrian": os.getenv("FISH_VOICE_ADRIAN") or settings.FISH_VOICE_ADRIAN,
-        "ethan": os.getenv("FISH_VOICE_ETHAN") or settings.FISH_VOICE_ETHAN,
-    }
-    voice_id = voice_id_map.get(key)
-    if not voice_id:
-        raise EnvironmentError(FISH_TTS_VOICE_NOT_CONFIGURED.format(voice_key=key))
-    return voice_id
+    # Check specific env override first (e.g. during testing or explicit env variable)
+    if cleaned:
+        env_val = os.getenv(f"FISH_VOICE_{cleaned.upper()}")
+        if env_val:
+            return env_val
+
+    # Direct catalog lookup by slug or id
+    if cleaned and cleaned in FISH_VOICES_BY_ID:
+        return FISH_VOICES_BY_ID[cleaned]["reference_id"]
+
+    if cleaned and cleaned.startswith("preset_fish_"):
+        candidate = cleaned[len("preset_fish_"):]
+        if re.fullmatch(r"[0-9a-fA-F]{32}", candidate):
+            return candidate
+
+    # Fallback to default key
+    key = cleaned if (cleaned and cleaned in settings.TTS_VOICE_KEYS) else settings.TTS_DEFAULT_VOICE_KEY
+
+    env_val = os.getenv(f"FISH_VOICE_{key.upper()}")
+    if env_val:
+        return env_val
+
+    if key in FISH_VOICES_BY_ID:
+        return FISH_VOICES_BY_ID[key]["reference_id"]
+
+    if key == settings.TTS_DEFAULT_VOICE_KEY:
+        return DEFAULT_FISH_VOICE_ID
+
+    raise EnvironmentError(FISH_TTS_VOICE_NOT_CONFIGURED.format(voice_key=key))
 
 
 async def generate_speech(text: str, voice_key: str | None = None) -> bytes:

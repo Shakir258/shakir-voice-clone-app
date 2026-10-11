@@ -21,10 +21,10 @@ export function VoiceProfileCard({ voice, onRename, onDelete, onRecompute }: Pro
 
   const hindiMeta = HINDI_VOICES_BY_ID.get(voice.id);
   const displayName = hindiMeta?.name || voice.name;
-  const displayCategory = hindiMeta?.category || (voice.is_preset ? "Studio Voice" : "Custom Cloned");
+  const displayCategory = hindiMeta?.category || voice.category || (voice.is_preset ? (voice.engine === "fish" ? "Fish Audio" : "Studio Voice") : "Custom Cloned");
   const displayGender = hindiMeta?.gender || voice.gender || (displayName.toLowerCase().includes("female") ? "female" : "male");
   const displayStyle = hindiMeta?.style || voice.style || "Natural Neural";
-  const displayDesc = hindiMeta?.description || voice.description || (voice.is_preset ? "Studio-grade neural voice with natural Hindi articulation." : "Custom cloned voice from audio sample.");
+  const displayDesc = hindiMeta?.description || voice.description || (voice.is_preset ? (voice.engine === "fish" ? "High fidelity Fish Audio voice model." : "Studio-grade neural voice with natural Hindi articulation.") : "Custom cloned voice from audio sample.");
 
   const togglePreview = () => {
     if (isPlaying && audioRef.current) {
@@ -68,7 +68,7 @@ export function VoiceProfileCard({ voice, onRename, onDelete, onRecompute }: Pro
         </div>
 
         <span className={`ready-badge ${voice.is_preset ? "ready" : voice.ready ? "ready" : "not-ready"}`}>
-          {voice.is_preset ? "🇮🇳 Studio Preset" : voice.ready ? "✓ Cloned" : "Needs recompute"}
+          {voice.is_preset ? (voice.engine === "fish" ? "🐟 Fish Audio" : "🇮🇳 Studio Preset") : voice.ready ? "✓ Cloned" : "Needs recompute"}
         </span>
       </div>
 
